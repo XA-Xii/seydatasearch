@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>介质材料二次电子发射数据查询</title>
+</head>
+<style type="text/css">
+*{
+    margin: 0;
+    padding: 0;
+}
+
+body {
+    background-image: linear-gradient(120deg, #fdfbfb 0%, #ebedee 100%);
+    /* display: flex;
+    align-items: center; */
+}
+.headtitle{
+    width: 100%;
+    margin: 0 auto;
+
+    font-family: "lucida grande", "lucida sans unicode", lucida, helvetica, "Hiragino Sans GB", "Microsoft YaHei", "WenQuanYi Micro Hei", sans-serif;
+    font-size: 30px;
+    text-align: center;
+}
+
+
+
+</style>
+<body>
+<div class="headtitle">
+    <div id="header"style="padding-top:100px;left:50%" >
+        <h1>介质材料二次电子发射数据查询</h1>
+    </div>
+</div>
+
+
+<form  action="/apitest" method="get" id="content" style="top:50%;left:50%;text-align: center;padding-top:200px;">
+
+        <select name="material"style="width:400px">
+        <option value="al2o3">氧化铝</option>
+        <option value="pe">聚乙烯</option>
+        <option value="pi" selected>聚酰亚胺</option>
+        <option value="nylon">尼龙</option>
+        <option value="pp">聚丙烯</option>
+        <option value="pvc">聚氯乙烯</option>
+        <option value="pc">聚碳酸酯</option>
+        <option value="ptfe">聚四氟乙烯</option>
+        <option value="pet">涤纶</option>
+        <option value="tpu">热可塑性聚氨酯</option>
+        <option value="mica">白云母</option>
+        <option value="sio2">二氧化硅</option>
+        <option value="pmma">聚甲基丙烯酸甲酯</option>
+        <option value="aln">氮化铝</option>
+        <option value="zro2">氧化锆</option>
+        <option value="sic">碳化硅</option>
+        <option value="bn">氮化硼</option>
+        <option value="si3n4">氮化硅</option>
+        <option value="fe3yo6">铁氧体</option>
+        <option value="mst-16">陶瓷 MST-16</option>
+        <option value="mct-21">陶瓷 MCT-21</option>
+        <option value="znt-45">陶瓷 ZNT-45</option>
+        </select>
+        <button type="submit" style="margin: 30px;width: 70px;">确定</button>
+
+</form>
+</div>
+
+</body>
+</html>

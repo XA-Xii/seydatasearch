@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <!-- 引入 ECharts/jquery 文件 -->
+    <script src="http://libs.baidu.com/jquery/2.0.0/jquery.js"></script>
+    <script src="https://cdn.staticfile.org/echarts/4.3.0/echarts.min.js"></script>
+    <title>seydata</title>
+    </head>
+<body>
+<script src="http://libs.baidu.com/jquery/2.0.0/jquery.js"></script>
+<textarea id="response-body">{{ response }}</textarea>
+<textarea id="response-body1">{{ table }}</textarea>
+<table width="600" border="1" cellspacing="0">
+    <thead>
+       <tr>
+          <th>入射电子能量/eV</th>
+          <th>SEY</th>
+          <th>正误差</th>
+          <th>负误差</th>
+       </tr>
+    </thead>
+    <tbody id="seytable"></tbody>
+ </table>
+<div id="seycurve" style="width: 1200px;height:800px;"></div>
+<script type="text/javascript">
+    var list = {{ sey_list | safe }};
+    var seyChart = echarts.init(document.getElementById('seycurve'));//初始化eCharts实例
+    //初始化存放坐标轴数据的栈
+    var x_voltage= [];
+    var y_sey = [];
+    var errordata = [];
+
+    //遍历List并将相应值存入数组
+    $('#list').prepend(list[0]);
+      console.log('--- 遍历 List 方法 2 ---')
+    var tbody = document.getElementById('seytable');
+     for (var i = 0; i < list.length; i++) {
+         //向表格中填入数据
+         var row = document.createElement('tr'); //创建行
+
+	         var idCell = document.createElement('td'); //创建第一列
+	         idCell.innerHTML = list[i][0]; //填充数据
+	         row.appendChild(idCell); //加入行  ，下面类似
+
+	         var nameCell = document.createElement('td');//创建第二列
+	         nameCell.innerHTML = list[i][1];
+             row.appendChild(nameCell);
+
+	        var jobCell = document.createElement('td');//创建第三列
+	        jobCell.innerHTML = list[i][2];
+	        row.appendChild(jobCell);
+
+	        var negaCell = document.createElement('td');//创建第四列
+	        negaCell.innerHTML = list[i][3];
+	        row.appendChild(negaCell);
+
+	        tbody.appendChild(row);
+	     //向栈中存入数据
+         x_voltage.push(list[i][0]);
+         y_sey.push([list[i][0],list[i][1]]);
+         errordata.push([list[i][0],list[i][1],list[i][2],list[i][3]]);
+
+         // 鼠标右键，审核元素，选择 console 可以看到输入的值。
+         console.log(list[i]);
+         //}
+     };
+     function renderItem(params,api){
+         var xValue = api.value(0);
+         var highValue = api.coord([xValue,api.value(1)+api.value(2)]);
+         var lowValue = api.coord([xValue,api.value(1)+api.value(3)]);
+         var halfWidth = 4;//api.size([1, 0])[0] * 0.1; //半宽度，使用api.size(...) 函数，表示得到坐标系上一段数值范围对应的长度
+         var style = api.style({
+		stroke: api.visual('color'),
+		fill: null
+	});
+
+	return {
+		type: 'group',
+		children: [
+			{
+				type: 'line',
+				shape: {
+					x1: highValue[0] - halfWidth,
+					y1: highValue[1],
+					x2: highValue[0] + halfWidth,
+					y2: highValue[1]
+				},
+				style: style
+			},
+			{
+				type: 'line',
+				shape: {
+					x1: highValue[0],
+					y1: highValue[1],
+					x2: lowValue[0],
+					y2: lowValue[1]
+				},
+				style: style
+			},
+			{
+				type: 'line',
+				shape: {
+					x1: lowValue[0] - halfWidth,
+					y1: lowValue[1],
+					x2: lowValue[0] + halfWidth,
+					y2: lowValue[1]
+				},
+				style: style
+			}
+		]
+	};
+     }
+     var option ={
+         tooltip: {
+        trigger: 'axis',
+        axisPointer:{
+            type:"cross",
+        },
+
+       
+    },
+         title:{
+             text:'二次电子发射曲线',
+             left:'45%',
+             show:true,
+             textStyle:{
+               color:'green',
+               //frontSize:'',
+             },
+         },
+         xAxis:{
+
+             type: 'value',
+             interval:1000,
+             min:0,
+             max:5500,
+             name:'初始入射电压/eV',
+
+             axisTick: {show:true},
+         },
+         yAxis:{
+           //data:y_sey
+             axisTick: {show:true},
+         },
+         series:[
+             {
+                 name:"SEY",
+                 type:"scatter",
+
+                 data : y_sey,
+                 itemStyle:{
+                     normal:{
+                         color: '#77bef7',
+                     }
+                 }
+
+             },
+             {
+                 type: 'custom',
+                 name:'误差',
+                 itemStyle: {
+                     normal: {
+                         borderWidth: 1.5
+                     }
+                 },
+                 renderItem:renderItem,
+                 encode:{
+                     x:0,
+                     y:[1,2]
+                 },
+                 data: errordata,
+                 z:100
+             }
+
+         ]
+     };
+     seyChart.setOption(option);
+
+
+
+</script>
+</body>
+</html>
